@@ -1,9 +1,9 @@
 {
   "name": "canvas.ts",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A node.js canvas client",
   "main": "dist/index.js",
-  "types": "dist/main.d.ts",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "rm -rf dist && tsc --declaration"
   },
