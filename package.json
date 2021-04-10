@@ -4,6 +4,7 @@
   "description": "A node.js canvas client",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "keywords": ["canvas", "api", "wrapper", "typescript", "types", "lms"],
   "scripts": {
     "build": "rm -rf dist && tsc --declaration",
     "pub": "npm build && npm publish"
