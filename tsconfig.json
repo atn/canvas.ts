@@ -13,6 +13,6 @@
     "baseUrl": "./lib",
     "typeRoots": ["./Types", "../node_modules/@types"]
   },
-  "include": ["**/*.ts"],
+  "include": ["lib/**/*.ts"],
   "exclude": ["dist"]
 }
