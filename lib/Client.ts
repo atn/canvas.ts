@@ -1,31 +1,21 @@
 import { EventEmitter } from 'events'
+
 // Classes
 import { Todo } from './Classes/Todo'
+import { Courses } from './Classes/Courses'
+
 // Rest
 import { Rest } from './Rest'
 
-interface Permissions {
-  can_update_name: boolean;
-  can_update_avatar: boolean;
-  limit_parent_app_web_access: boolean;
-}
-
-export interface User {
-  id: number;
-  name: string;
-  created_at: string;
-  sortable_name: string;
-  short_name: string;
-  avatar_url: string;
-  locale?: string;
-  effective_locale: string;
-  permissions: Permissions;
-}
+// Types
+import { User } from './Types/User'
+import { Course } from './Types/Course'
 
 export interface Client {
   rest: Rest
   user: User
   todo: Todo
+  courses: Courses
   auth: string
   domain: string
 
@@ -48,8 +38,23 @@ export class Client extends EventEmitter {
     // init classes
     this.rest = new Rest(this)
     this.todo = new Todo(this)
+    this.courses = new Courses(this)
 
-    this.user = await this.rest.get('/users/self')
+    // fetch user info
+    const user = await this.fetchUser()
+
+    this.user = user.self
+    for (let course of user.courses) {
+      await this.courses.collect(course.id, course)
+    }
+
     this.emit('connect')
+  }
+
+  private fetchUser = async () => {
+    const self = await this.rest.get<User>('/users/self')
+    const courses = await this.rest.get<Course[]>('/courses')
+
+    return { courses, self }
   }
 }

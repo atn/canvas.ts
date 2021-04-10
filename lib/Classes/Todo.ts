@@ -8,7 +8,7 @@ export class Todo {
     this.client = client
   }
 
-  get = async (): Promise<TodoItem[]> => {
+  async get(): Promise<TodoItem[]> {
     const res = await this.client.rest.get('/users/self/todo')
 
     return res

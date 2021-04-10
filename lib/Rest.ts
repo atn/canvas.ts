@@ -10,7 +10,7 @@ interface RestCreate {
 }
 
 export class Rest {
-  client: Client
+  private client: Client
 
   constructor(client: Client) {
     this.client = client;
@@ -32,7 +32,7 @@ export class Rest {
     }
   }
 
-  get = async (path: string, data = {}) => {
+  get = async <T = any>(path: string, data = {}): Promise<T> => {
     return await  this.create({method: 'get', path, data})
   }
 }
