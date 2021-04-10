@@ -1,4 +1,4 @@
-interface TodoItem {
+export interface TodoItem {
   context_type: string;
   course_id: number;
   type: string;
