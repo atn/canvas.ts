@@ -1,5 +1,7 @@
 import { EventEmitter } from 'events'
-
+// Classes
+import { Todo } from './Classes/Todo'
+// Rest
 import { Rest } from './Rest'
 
 interface Permissions {
@@ -23,6 +25,7 @@ export interface User {
 export interface Client {
   rest: Rest
   user: User
+  todo: Todo
   auth: string
   domain: string
 
@@ -34,10 +37,17 @@ export class Client extends EventEmitter {
     super()
   }
 
+  /**
+  * @param auth - Users canvas authorization bearer token
+  * @param domain - Users canvas domain (e.g. school.instructure.com) 
+  */
   connect = async (auth: string, domain: string) => {
     this.auth = auth
     this.domain = domain
+
+    // init classes
     this.rest = new Rest(this)
+    this.todo = new Todo(this)
 
     this.user = await this.rest.get('/users/self')
     this.emit('connect')
