@@ -9,7 +9,7 @@ import { Rest } from './Rest'
 
 // Types
 import { User } from './Types/User'
-import { Course } from './Types/Course'
+import { ICourse } from './Classes/Courses'
 
 export interface Client {
   rest: Rest
@@ -31,7 +31,7 @@ export class Client extends EventEmitter {
   * @param auth - Users canvas authorization bearer token
   * @param domain - Users canvas domain (e.g. school.instructure.com) 
   */
-  connect = async (auth: string, domain: string) => {
+  async connect (auth: string, domain: string): Promise<void> {
     this.auth = auth
     this.domain = domain
 
@@ -45,6 +45,7 @@ export class Client extends EventEmitter {
 
     this.user = user.self
     for (let course of user.courses) {
+      // wait b/c has to fetch assignments
       await this.courses.collect(course.id, course)
     }
 
@@ -53,7 +54,7 @@ export class Client extends EventEmitter {
 
   private fetchUser = async () => {
     const self = await this.rest.get<User>('/users/self')
-    const courses = await this.rest.get<Course[]>('/courses')
+    const courses = await this.rest.get<ICourse[]>('/courses')
 
     return { courses, self }
   }

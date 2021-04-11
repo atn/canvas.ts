@@ -5,9 +5,13 @@ import { Assignments } from './Assignments';
 
 // Types
 import { Course } from '../Types/Course';
-import { Client } from '../index';
+import { Client } from '../Client';
 
-export class Courses extends BaseCollection<Course> {
+export interface ICourse extends Course {
+  assignments?: Assignments
+}
+
+export class Courses extends BaseCollection<ICourse> {
   private client: Client
 
   constructor(client: Client) {
@@ -15,7 +19,7 @@ export class Courses extends BaseCollection<Course> {
     this.client = client
   }
 
-  async collect(key: string | number, value: Course) {
+  async collect(key: string | number, value: ICourse) {
     value.assignments = new Assignments(this.client)
 
     // fetch assignments of course

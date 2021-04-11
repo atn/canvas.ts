@@ -1,5 +1,3 @@
-import { Assignments } from 'Classes/Assignments';
-
 export interface Course {
   id: number;
   name: string;
@@ -8,7 +6,6 @@ export interface Course {
   start_at: string;
   grading_standard_id?: null;
   is_public: boolean;
-  assignments: Assignments;
   created_at: string;
   course_code: string;
   default_view: string;
