@@ -3,12 +3,14 @@ import { EventEmitter } from 'events'
 // Classes
 import { Todo } from './Classes/Todo'
 import { Courses } from './Classes/Courses'
+import { Conversations } from './Classes/Conversations'
 
 // Rest
 import { Rest } from './Rest'
 
 // Types
 import { User } from './Types/User'
+import { Conversation } from './Types/Conversation'
 import { ICourse } from './Classes/Courses'
 
 export interface Client {
@@ -16,6 +18,7 @@ export interface Client {
   user: User
   todo: Todo
   courses: Courses
+  conversations: Conversations
   auth: string
   domain: string
 
@@ -39,15 +42,14 @@ export class Client extends EventEmitter {
     this.rest = new Rest(this)
     this.todo = new Todo(this)
     this.courses = new Courses(this)
+    this.conversations = new Conversations(this)
 
     // fetch user info
     const user = await this.fetchUser()
 
     this.user = user.self
-    for (let course of user.courses) {
-      // wait b/c has to fetch assignments
-      await this.courses.collect(course.id, course)
-    }
+    this.conversations.collect(user.conversations)
+    await this.courses.collect(user.courses)
 
     this.emit('connect')
   }
@@ -55,7 +57,8 @@ export class Client extends EventEmitter {
   private fetchUser = async () => {
     const self = await this.rest.get<User>('/users/self')
     const courses = await this.rest.get<ICourse[]>('/courses')
+    const conversations = await this.rest.get<Conversation[]>('/conversations')
 
-    return { courses, self }
+    return { courses, self, conversations }
   }
 }

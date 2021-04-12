@@ -22,7 +22,7 @@ export class Rest {
       
       let headers = {'content-type': 'application/json', 'Authorization': `Bearer ${this.client.auth}`}
 
-      const res = await fetch(url, { method, body: method != 'get' ? data : null, headers})
+      const res = await fetch(url, { method, body: method != 'get' ? JSON.stringify(data) : JSON.stringify({}), headers})
 
       // TODO: better error handling
       return await res.json()
@@ -32,7 +32,11 @@ export class Rest {
     }
   }
 
-  get = async <T = any>(path: string, data = {}): Promise<T> => {
-    return await  this.create({method: 'get', path, data})
+  async get<T = any>(path: string, data = {}): Promise<T> {
+    return await this.create({method: 'get', path, data})
+  }
+
+  async post<T = any>(path: string, data = {}): Promise<T> {
+    return await this.create({method: 'post', path, data})
   }
 }

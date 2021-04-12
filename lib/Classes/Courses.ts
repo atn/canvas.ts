@@ -19,17 +19,19 @@ export class Courses extends BaseCollection<ICourse> {
     this.client = client
   }
 
-  async collect(key: string | number, value: ICourse) {
-    value.assignments = new Assignments(this.client)
+  async collect(courses: ICourse[]) {
+    for (let value of courses) {
+      value.assignments = new Assignments(this.client)
 
-    // fetch assignments of course
-    const fetched = await this.client.rest.get(`/courses/${value.id}/assignments`)
+      // fetch assignments of course
+      const fetched = await this.client.rest.get(`/courses/${value.id}/assignments`)
 
-    for (let assignment of fetched) {
-      value.assignments.collect(assignment.id, assignment)
-    }
+      for (let assignment of fetched) {
+        value.assignments.collect(assignment.id, assignment)
+      }
       
-    return super.set(key, value)
+      super.set(value.id, value)
+    }
   }
   // TODO: add actions
 }
