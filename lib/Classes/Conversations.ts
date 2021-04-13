@@ -1,3 +1,4 @@
+import FormData from 'form-data'
 import { BaseCollection } from './BaseCollection'
 
 // Types
@@ -16,5 +17,17 @@ export class Conversations extends BaseCollection<Conversation> {
     for (let value of conversations) {
       super.set(value.id, value)
     }
+  }
+
+  async create(subject: string, body: string, recipients: string[]) {
+    const form = new FormData()
+    form.append('subject', subject)
+    form.append('body', body)
+
+    for (let recipient of recipients) {
+      form.append('recipients[]', recipient)
+    }
+
+    return await this.client.rest.post('/conversations', form)
   }
 }
