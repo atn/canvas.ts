@@ -17,7 +17,7 @@ export interface Conversation {
   participants?: (ParticipantsEntity)[] | null;
   visible: boolean;
   context_code: string;
-  context_name: string;
+  context_name?: string;
 }
 
 interface AudienceContexts {

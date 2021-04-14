@@ -19,7 +19,7 @@ export class Conversations extends BaseCollection<Conversation> {
     }
   }
 
-  async create(subject: string, body: string, recipients: string[]) {
+  async create(subject: string, body: string, recipients: string[]): Promise<Conversation> {
     const form = new FormData()
     form.append('subject', subject)
     form.append('body', body)
@@ -28,6 +28,9 @@ export class Conversations extends BaseCollection<Conversation> {
       form.append('recipients[]', recipient)
     }
 
-    return await this.client.rest.post('/conversations', form)
+    const res = await this.client.rest.post('/conversations', form)
+    this.collect(res)
+
+    return res
   }
 }
