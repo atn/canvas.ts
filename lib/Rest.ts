@@ -1,4 +1,5 @@
-import fetch from 'node-fetch'
+import fetch, { FetchError } from 'node-fetch'
+import { exception } from 'node:console';
 import { Client } from './Client'
 
 // https://github.com/hivenapp/hiven.js
@@ -20,12 +21,15 @@ export class Rest {
     try {
       const url = `https://${this.client.domain}/api/v1${path}`
       
-      let headers = {'content-type': 'application/json', 'Authorization': `Bearer ${this.client.auth}`}
+      let headers = {'Authorization': `Bearer ${this.client.auth}`}
 
-      const res = await fetch(url, { method, body: method != 'get' ? JSON.stringify(data) : JSON.stringify({}), headers})
+      const res = await fetch(url, { method, body: method != 'get' ? data : null, headers})
+      const json = await res.json()
 
       // TODO: better error handling
-      return await res.json()
+      if (!res.ok) throw new Error(`CanvasAPIError: ${res.status} - ${res.statusText} on ${method.toUpperCase()} ${path}. Response: ${JSON.stringify(json)}`)
+
+      return json
     } catch (err) {
       console.error(err)
       throw err
