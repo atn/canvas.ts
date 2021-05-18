@@ -28,8 +28,8 @@ export class Conversations extends BaseCollection<Conversation> {
       form.append('recipients[]', recipient)
     }
 
-    const res = await this.client.rest.post('/conversations', form)
-    this.collect(res)
+    const res = await this.client.rest.post<Conversation>('/conversations', form)
+    this.collect([res])
 
     return res
   }
